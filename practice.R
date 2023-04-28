@@ -9,7 +9,7 @@ write.csv(friend_adjacency,"friend_adjacency.csv")
 
 working <- read.csv('EdgeList_ds/working_edgeList.csv', header=FALSE)
 work <- graph.data.frame(as.matrix(working), directed = FALSE)
-work2 <- simplify(work, remove.multiple = FALSE, remove.loops = TRUE)
+work2 <- simplify(work, remove.multiple = TRUE, remove.loops = TRUE)
 work_adjacency <- get.adjacency(work2, sparse = FALSE)
 
 work_adjacency
