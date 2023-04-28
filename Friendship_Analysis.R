@@ -5,19 +5,16 @@ library(igraph)
 
 
 #### Load and Clean Data ####
-
-url_friends = "https://raw.githubusercontent.com/Celinejxy/Newtwork_Analysis/main/friend_adjacency.csv"
-data <- read_csv(url_friends)
+data <- read_csv("friend_adjacency.csv")
 dataframe <- as.data.frame(data)
 # correct row IDs becoming col 1
 row.names(dataframe) <- dataframe[,1]
 dataframe <- dataframe[, -1]
-
+dataframe
 Network_Description <- "This network represents the undirected interactions between
 employees at a sunglasses company. The interactions were deemed non-work related,
 or included personal information and interactions and thus coded as a friendship 
 network."
-
 
 # create a xUcinet obj
 Sunglass_friends <-xCreateProject(GeneralDescription=Network_Description,
