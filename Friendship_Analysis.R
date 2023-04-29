@@ -5,7 +5,7 @@ library(igraph)
 
 
 #### Load and Clean Data ####
-data <- read_csv("friend_adjacency.csv")
+data <- read_csv("Adjacency_ds/friend_adjacency.csv")
 dataframe <- as.data.frame(data)
 # correct row IDs becoming col 1
 row.names(dataframe) <- dataframe[,1]
