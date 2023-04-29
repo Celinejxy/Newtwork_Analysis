@@ -3,7 +3,6 @@ library(sna)
 library(readr)
 library(igraph)
 
-
 #### Load and Clean Data ####
 data <- read_csv("Adjacency_ds/friend_adjacency.csv")
 dataframe <- as.data.frame(data)
@@ -11,15 +10,13 @@ dataframe <- as.data.frame(data)
 row.names(dataframe) <- dataframe[,1]
 dataframe <- dataframe[, -1]
 dataframe
-Network_Description <- "This network represents the undirected interactions between
-employees at a sunglasses company. The interactions were deemed non-work related,
-or included personal information and interactions and thus coded as a friendship 
-network."
+Network_Description <- "This network represents the undirected interactions between employees at a sunglasses company. The interactions were deemed non-work related,
+or included personal information and interactions and thus coded as a friendship network."
 
 # create a xUcinet obj
-Sunglass_friends <-xCreateProject(GeneralDescription=Network_Description,
-                                  NetworkName="Sunglass Friends",
-                                  NETFILE=url_friends,
+sunglass_network <-xCreateProject(GeneralDescription=Network_Description,
+                                  NetworkName="friendship",
+                                  NETFILE="Adjacency_ds/friend_adjacency.csv",
                                   FileType = "csv",
                                   InFormatType="AdjMat",
                                   NetworkDescription="friendships between coworkers",
@@ -29,7 +26,23 @@ Sunglass_friends <-xCreateProject(GeneralDescription=Network_Description,
                                   Values="Ordinal",
                                   Class="matrix",
                                   References="No References")
+sunglass_network$friendship
 
+
+
+###Advice Network####
+sunglass_network <- xAddToProject(sunglass_network, NetworkName = "advices",
+                                  NETFILE1 = 'Adjacency_ds/advice_adjacency.csv', 
+                                  FileType = 'csv',
+                                  InFormatType = 'AdjMat', 
+                                  NetworkDescription = 'Advices and mentorship between employees',
+                                  Mode=c('People'),
+                                  Directed = TRUE,
+                                  Loops = FALSE,
+                                  Values = 'Ordinal',
+                                  Class='matrix')
+
+sunglass_network$advices
 #### Network Paths ####
 # calculate the number of 4-link paths people in the network can take 
 F_matrix <- as.matrix(dataframe)

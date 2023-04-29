@@ -15,8 +15,7 @@ work_adjacency <- get.adjacency(work2, sparse = FALSE)
 work_adjacency
 write.csv(work_adjacency,"work_adjacency.csv")
 
-advices <- read.csv('EdgeList_ds/advice-Edgelist.csv', header = TRUE)
-advices <- advices[c(1:135),]
+advices <- read.csv('EdgeList_ds/advice-Edgelist_updated.csv', header = TRUE)
 advices <- graph_from_data_frame(advices, directed = TRUE)
 advices2<- simplify(advices, remove.multiple = TRUE, remove.loops = TRUE)
 advice_adjacency <- get.adjacency(advices2, sparse = FALSE, attr = 'weight' )
