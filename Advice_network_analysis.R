@@ -12,7 +12,6 @@ sunglass_network <- xAddToProject(sunglass_network, NetworkName = "advices",
                                   Loops = FALSE,
                                   Values = 'Ordinal',
                                   Class='matrix')
-
 adviceN <- sunglass_network$advices
 adviceN
 
@@ -47,64 +46,30 @@ network.dyadcount(adviceDN)
 
 ## Vignette #3 Dealing with isolates
 components(adviceDN)
-lgc <- component.largest(PadgettN, result="graph")
+lgc <- component.largest(adviceDN, result="graph")
 gd <-geodist(lgc)
 max(gd$gdist)
-isolates(PadgettN)
-length(isolates(PadgettN))
+isolates(adviceDN)
+length(isolates(adviceDN))
 
 ## Vignette #4 Dyads and Triags
-dyad.census(PadgettN)
-triad.census(PadgettN, mode="graph")
-triad.census(PadgettN, mode="digraph")
-grecip(PadgettN, measure="dyadic.nonnull")
-laz = Lazega_Lawyers$Advice
-grecip(laz, measure="dyadic.nonnull")
-dyad.census(laz)
-triad.census(laz, mode="graph")
-triad.census(laz, mode="digraph")
+dyad.census(adviceDN)
+triad.census(adviceDN, mode="graph")
+triad.census(adviceDN, mode="digraph")
+grecip(adviceDN, measure="dyadic.nonnull")
 
 #Vignette #5 Understanding degrees
-gplot(PadgettN, gmode="graph", displaylabels=TRUE)
-degree(PadgettM, gmode="graph")
-laz = Lazega_Lawyers$Advice
-degree(laz)
-degree(laz, cmode="indegree")
-degree(laz, cmode="outdegree")
-gplot(laz, gmode="graph", displaylabels=TRUE)
+gplot(adviceDN, gmode="graph", displaylabels=TRUE)
+degree(adviceDN, gmode="graph")
 
 ##Vignette 6 Remember how to add vertex information
-list.vertex.attributes(PadgettN)
-get.vertex.attribute(PadgettN, "vertex.names")
-set.vertex.attribute(PadgettN, "Age", c("30","20","10","40","100","25","4","8", "60", "22","18", "11", "77", "10","90", "33"))
-list.vertex.attributes(PadgettN)
-get.vertex.attribute(PadgettN,"Age")
-## The other way was variable <- PadgettN %v% attribute values
-
-## Vignette #7 Centralization this use
-# dPadgett.prom <- data.frame(degree = degree(PadgettN))
-# row.names(dPadgett.central) <- PadgettN %v% "vertex.names"
-# dPadgett.centralsort <- dPadgett.central[row.names(order(-dPadgett.central$degree)),]
-# dPadgett.centralsort2 <- rbind(dPadgett.centralsort, c(cd))
-
-# data(PadgettN)
-df.prom2 <- data.frame(
-  degree = degree(PadgettN),
-  between = betweenness(PadgettN),
-  ev =evcent(PadgettN)
-)
-
-row.names(df.prom2)<- PadgettN %v% "vertex.names"
-df.prompt <- df.prom2[order(-df.prom2$degree),]
-cd <- centralization(PadgettN, degree)
-cb <- centralization(PadgettN, betweenness)
-cv <- centralization(PadgettN, evcent)
-df.prompt <- rbind(df.prompt, c(cd,cb,cv))
-print(df.prompt)
-
-cor(df.prom2)
+list.vertex.attributes(adviceDN)
+get.vertex.attribute(adviceDN, "vertex.names")
+set.vertex.attribute(adviceDN, "Seniority_level", c(2,1,1,1,1,0,1,0,0,1,1,0,1,0,0,0,0,0,0,0,1,0,2,0,0,0,0,0,2,0,0,1,0,0,2,2,0,2,2,0,0,0,0,0,2,0,1,1,2,1,0,1,2,2,0,1,0,1,0,0,1,0,0,2,0,2,1,1,2,2,2))
+list.vertex.attributes(adviceDN)
+get.vertex.attribute(adviceDN,"Seniority_level")
 
 ##Vignette #8
-florentineDist <- geodist(PadgettN, count.paths = TRUE, inf.replace = 0)
+florentineDist <- geodist(adviceDN, count.paths = TRUE, inf.replace = 0)
 hist(florentineDist$gdist)
 hist(florentineDist$counts)
