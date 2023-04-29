@@ -1,5 +1,17 @@
-library(xUCINET)
-library(sna)
+##adding attribute data to existing network
+attributeS<- read.csv('AttributeData.csv', header = TRUE)
+attributeS <- attributeS[1:70,]
+rownames(attributeS) <- attributeS[,1]
+attributeS[1] <- NULL
+attributeS
+colnames(attributeS)<- c('Name','Department','Age',"Gender",'Year_worked','Corrective_lenses',
+                            'Seniority_level','Hair_color','Hobbies','Mentorship')
+sunglass_network<- xAddAttributesToProject(ProjectName=sunglass_network,
+                                           ATTFILE1 = attributeS,
+                                           FileType="Robject",
+                                           Mode=c("People"),
+                                           AttributesDescription = c('Name','Department','Age',"Gender",'Year_worked','Corrective_lenses',
+                            'Seniority_level','Hair_color','Hobbies','Mentorship'))
 
 ###Advice Network####
 sunglass_network <- xAddToProject(sunglass_network, NetworkName = "advices",
@@ -18,7 +30,7 @@ adviceN
 ## while the weights indicates the importance and quality of the advices and mentorship had given by 
 ## the source vertices, with 1 being very little and 5 being a great deal, the raw data is asymmetric
 
-## symmetrize using minimum and dichotomize using greater than 0
+## using minimum and dichotomize using greater than 0
 adviceDic <- xDichotomize(sunglass_network$advices, Value = 0) 
 adviceDic
 save(adviceDic, file='adviceDic.RData')
@@ -37,39 +49,75 @@ adviceWalk <- adviceD %*% adviceD%*% adviceD %*% adviceD
 ## Vignette #2 getting basic statistics for a network.
 adviceDN <- as.network(adviceD)
 summary(adviceDN)
-network.size(adviceDN)
-network.density(adviceDN)
+network.size(adviceDN) #70 
+network.density(adviceDN) #0.024
+## adding network that represents the diff in seniority level based on the attribute 
+seniority<- c(2,1,1,1,1,0,1,0,0,1,1,0,1,0,0,0,0,0,0,0,1,0,2,0,0,0,0,0,2,0,0,1,0,0,2,2,0,2,2,0,0,0,0,0,2,0,1,1,2,1,0,1,2,2,0,1,0,1,0,1,0,0,2,0,2,1,1,2,2,2)
+seniorityN <- xAttributeToNetwork(seniority, Type= 'Diffij')
+seniorityN
+length(seniority)
+nameS <- paste('a',seq(1,70),sep='')
+rownames(seniorityN) <- nameS
+colnames(seniorityN)<- nameS
+save(seniorityN, file = 'seniority.RData')
+write.csv(seniorityN, file= 'seniority_adjacency.csv')
+### save the seniority network back into the project 
+sunglass_network <- xAddToProject(sunglass_network, 
+                                  NETFILE1 = seniorityN, 
+                                  NetworkName = 'Seniority_AdjacencyN',
+                                  FileType = 'Robject')
+sunglass_network$Seniority_AdjacencyN
+
+###visualization 
 gden(adviceDN)
 gtrans(adviceDN)
 network.dyadcount(adviceDN)
 
-
-## Vignette #3 Dealing with isolates
-components(adviceDN)
-lgc <- component.largest(adviceDN, result="graph")
-gd <-geodist(lgc)
-max(gd$gdist)
+library(igraph)
+##convert into graph object 
+adviceGraph <- graph_from_adjacency_matrix(sunglass_network$Dichotimized_advice,
+                                            mode = 'directed',
+                                            weighted = TRUE,
+                                            diag = FALSE)
+component_distribution(adviceGraph, cumulative = TRUE)
+components(adviceGraph, mode = c('weak'))
+lgc<- component.largest(adviceDN, connected="weak", 
+                        result = 'graph', 
+                        return.as.edgelist = FALSE)
+gplot(adviceDN,vertex.col=2+lgc)  #Plot with component membership
+                           #Plot largest component itself 
 isolates(adviceDN)
-length(isolates(adviceDN))
+closeness(adviceGraph, mode='all')%>% sort(decreasing = TRUE)%>%.[1:4]
+
+gplot(adviceDN,vertex.col=2+lgc)  #Plot with component membership
+                           #Plot largest component itself 
+gplot(component.largest(adviceDN,connected="weak",result="graph"))
+
+
+E(adviceGraph)[which(E(adviceGraph)$weight <= 2)]$color <- '#bfbff7'
+E(adviceGraph)[which(E(adviceGraph)$weight >2)]$color <- '#583d68'
+adviceGraph <- delete.vertices(adviceGraph, degree(adviceGraph)==0)
+V(adviceGraph)$name <- V(adviceGraph)$name
+V(adviceGraph)$shape <- 'circle'
+V(adviceGraph)$color <- '#b2b7b9'
+V(adviceGraph)$vertex.frame.color <-'grey'
+
+set.seed(961)
+plot(
+  adviceGraph,
+  layout= layout_with_fr,
+  edge.curved=FALSE,
+  vertex.label.color="#3a0b57",
+  asp=FALSE,
+  vertex.label.cex=1.8,
+  arrow.mode=2,
+  edge.width=E(adviceGraph)$weight*4,
+  main="Advice Network Graph")
 
 ## Vignette #4 Dyads and Triags
-dyad.census(adviceDN)
-triad.census(adviceDN, mode="graph")
-triad.census(adviceDN, mode="digraph")
-grecip(adviceDN, measure="dyadic.nonnull")
+dyad.census(adviceGraph)
+triad.census(adviceGraph)
 
-#Vignette #5 Understanding degrees
-gplot(adviceDN, gmode="graph", displaylabels=TRUE)
-degree(adviceDN, gmode="graph")
-
-##Vignette 6 Remember how to add vertex information
-list.vertex.attributes(adviceDN)
-get.vertex.attribute(adviceDN, "vertex.names")
-set.vertex.attribute(adviceDN, "Seniority_level", c(2,1,1,1,1,0,1,0,0,1,1,0,1,0,0,0,0,0,0,0,1,0,2,0,0,0,0,0,2,0,0,1,0,0,2,2,0,2,2,0,0,0,0,0,2,0,1,1,2,1,0,1,2,2,0,1,0,1,0,0,1,0,0,2,0,2,1,1,2,2,2))
-list.vertex.attributes(adviceDN)
-get.vertex.attribute(adviceDN,"Seniority_level")
-
-##Vignette #8
 florentineDist <- geodist(adviceDN, count.paths = TRUE, inf.replace = 0)
 hist(florentineDist$gdist)
 hist(florentineDist$counts)
