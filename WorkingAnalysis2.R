@@ -45,7 +45,7 @@ sunglass_network$working
 
 #add attributes 
 attribute1 <- xAddAttributesToProject(ProjectName = sunglass_network,
-                                      ATTFILE1 = "Adjacency_ds/Attributes.csv",
+                                      ATTFILE1 = "Adjacency_ds/attr.csv",
                                       FileType = "csv",
                                       Mode = c("People"),
                                       AttributesDescription = c("Department 0=Executive 1=Marketing 2=Sales 3=Human Resources 4=Distribution 5=Manufacturing 6=Finance",
