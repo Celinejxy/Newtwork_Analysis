@@ -22,22 +22,6 @@ sunglass_network <-xCreateProject(GeneralDescription=Network_Description,
                                   References="No References")
 sunglass_network$friendship
 
-
-
-###Advice Network####
-sunglass_network <- xAddToProject(sunglass_network, NetworkName = "advices",
-                                  NETFILE1 = 'Adjacency_ds/advice_adjacency.csv', 
-                                  FileType = 'csv',
-                                  InFormatType = 'AdjMat', 
-                                  NetworkDescription = 'Advices and mentorship between employees',
-                                  Mode=c('People'),
-                                  Directed = TRUE,
-                                  Loops = FALSE,
-                                  Values = 'Ordinal',
-                                  Class='matrix')
-
-sunglass_network$advices
-
 f_dataframe <- as.data.frame(sunglass_network$friendship)
 # correct row IDs becoming col 1
 row.names(f_dataframe) <- f_dataframe[,1]

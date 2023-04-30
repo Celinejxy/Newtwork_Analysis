@@ -12,22 +12,6 @@ dataframe2 <- dataframe2[, -1]
 dataframe2
 Network_Description <- "This network represents the undirected interactions between employees at a sunglasses company. The interactions were deemed work related and thus coded as a working network."
 
-# create a xUcinet obj
-sunglass_network <-xCreateProject(GeneralDescription=Network_Description,
-                                  NetworkName="friendship",
-                                  NETFILE= "Adjacency_ds/work_adjacency.csv", 
-                                  FileType = "csv",
-                                  InFormatType="AdjMat",
-                                  NetworkDescription="friendships between coworkers",
-                                  Mode=c("People"),
-                                  Directed=FALSE,
-                                  Loops=FALSE,
-                                  Values="Ordinal",
-                                  Class="matrix",
-                                  References="No References")
-sunglass_network$friendship
-
-
 
 #Working Network
 sunglass_network <- xAddToProject(sunglass_network, NetworkName = "working",

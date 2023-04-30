@@ -1,17 +1,3 @@
-##adding attribute data to existing network
-attributeS<- read.csv('AttributeData.csv', header = TRUE)
-attributeS <- attributeS[1:70,]
-rownames(attributeS) <- attributeS[,1]
-attributeS[1] <- NULL
-attributeS
-colnames(attributeS)<- c('Name','Department','Age',"Gender",'Year_worked','Corrective_lenses',
-                            'Seniority_level','Hair_color','Hobbies','Mentorship')
-sunglass_network<- xAddAttributesToProject(ProjectName=sunglass_network,
-                                           ATTFILE1 = attributeS,
-                                           FileType="Robject",
-                                           Mode=c("People"),
-                                           AttributesDescription = c('Name','Department','Age',"Gender",'Year_worked','Corrective_lenses',
-                            'Seniority_level','Hair_color','Hobbies','Mentorship'))
 
 ###Advice Network####
 sunglass_network <- xAddToProject(sunglass_network, NetworkName = "advices",
