@@ -4,12 +4,6 @@ library(readr)
 library(igraph)
 
 #### Load and Clean Data ####
-data <- read_csv("Adjacency_ds/friend_adjacency.csv")
-dataframe <- as.data.frame(data)
-# correct row IDs becoming col 1
-row.names(dataframe) <- dataframe[,1]
-dataframe <- dataframe[, -1]
-dataframe
 Network_Description <- "This network represents the undirected interactions between employees at a sunglasses company. The interactions were deemed non-work related,
 or included personal information and interactions and thus coded as a friendship network."
 
@@ -43,9 +37,16 @@ sunglass_network <- xAddToProject(sunglass_network, NetworkName = "advices",
                                   Class='matrix')
 
 sunglass_network$advices
+
+f_dataframe <- as.data.frame(sunglass_network$friendship)
+# correct row IDs becoming col 1
+row.names(f_dataframe) <- f_dataframe[,1]
+f_dataframe <- f_dataframe[, -1]
+f_dataframe
+
 #### Network Paths ####
 # calculate the number of 4-link paths people in the network can take 
-F_matrix <- as.matrix(dataframe)
+F_matrix <- as.matrix(f_dataframe)
 FN_walk <- F_matrix %*% F_matrix %*% F_matrix %*% F_matrix
 # subset the matrix to only include diagonal values and corresponding column names
 diag_df <- data.frame(diag_values = diag(FN_walk), column_names = colnames(FN_walk))
